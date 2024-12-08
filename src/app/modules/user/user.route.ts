@@ -10,7 +10,8 @@ const router = express.Router();
 // Public routes
 router.post('/signup', validateRequest(userSignupSchema), userController.signup);
 router.post('/login', validateRequest(userLoginSchema), userController.login);
-
+router.get('/all', userController.getAllUsers);
+router.get('/', userController.getUserCount);
 // Protected routes
 router.use(authenticate); 
 

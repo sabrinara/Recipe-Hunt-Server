@@ -16,10 +16,22 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
 });
 
 export const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const users = await userService.getAllUsers();
-  SendResponse(res, 200, 'success', 'Fetched all users successfully', { users });
+  const { page = 1, limit = 10 } = req.query;
+
+  const users = await userService.getAllUsers(Number(page), Number(limit));
+  const totalUsers = await userService.getUserCount();
+
+  SendResponse(res, 200, 'success', 'Fetched all users successfully', {
+    users,
+    totalPages: Math.ceil(totalUsers / Number(limit)),
+    currentPage: Number(page),
+  });
 });
 
+export const getUserCount = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const count = await userService.getUserCount();
+  SendResponse(res, 200, 'success', 'Fetched user count successfully', { count });
+})
 export const getUserProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const user = await userService.getUserById(req.user.id);
   SendResponse(res, 200, 'success', 'Fetched user profile successfully', { user });

@@ -47,9 +47,15 @@ export const loginUser = async (email: string, password: string) => {
 
 
 
-export const getAllUsers = async () => {
-  return await UserModel.find();
+export const getAllUsers = async (page: number, limit: number) => {
+  const skip = (page - 1) * limit;
+  return await UserModel.find({}, 'name email imageUrl role').skip(skip).limit(limit);
 };
+
+export const getUserCount = async () => {
+  return await UserModel.countDocuments();
+};
+
 
 export const getUserById = async (id: string) => {
   return await UserModel.findById(id);
