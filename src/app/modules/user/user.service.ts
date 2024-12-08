@@ -57,14 +57,25 @@ export const getUserCount = async () => {
 };
 
 
+// Fetch single user by ID
 export const getUserById = async (_id: string) => {
-  return await UserModel.findById(_id, 'name email imageUrl role address isBlocked followers following premiumMembership');
+  if (!Types.ObjectId.isValid(_id)) throw new AppError('Invalid user ID', 400);
+  const user = await UserModel.findById(_id);
+  if (!user) throw new AppError('User not found', 404);
+  return user;
 };
 
-
+// Update user profile
 export const updateUserProfile = async (_id: string, profileData: IUserProfileUpdate) => {
-  return await UserModel.findByIdAndUpdate(_id, profileData, { new: true, runValidators: true });
+  if (!Types.ObjectId.isValid(_id)) throw new AppError('Invalid user ID', 400);
+  const updatedUser = await UserModel.findByIdAndUpdate(_id, profileData, {
+    new: true,
+    runValidators: true,
+  });
+  if (!updatedUser) throw new AppError('User not found', 404);
+  return updatedUser;
 };
+
 
 export const adminUpdateUser = async (id: string, adminData: IAdminUpdate) => {
   return await UserModel.findByIdAndUpdate(id, adminData, { new: true, runValidators: true });
