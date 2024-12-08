@@ -19,7 +19,7 @@ router.use(authenticate);
 // Route in user.router.ts
 // router.get('/profile', userController.getUserProfile); //08-Dec-2024 version
 
-// router.patch('/:id', validateRequest(userProfileUpdateSchema), userController.updateUserProfile);
+router.patch('/:id', validateRequest(userProfileUpdateSchema), userController.updateUserProfile);
 router.post('/follow', validateRequest(userFollowSchema), userController.followUser);
 router.post('/unfollow', validateRequest(userFollowSchema), userController.unfollowUser);
 
