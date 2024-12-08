@@ -49,7 +49,7 @@ export const loginUser = async (email: string, password: string) => {
 
 export const getAllUsers = async (page: number, limit: number) => {
   const skip = (page - 1) * limit;
-  return await UserModel.find({}, 'name email imageUrl role').skip(skip).limit(limit);
+  return await UserModel.find({}, 'name email imageUrl role address isBlocked followers following premiumMembership').skip(skip).limit(limit);
 };
 
 export const getUserCount = async () => {
@@ -57,12 +57,13 @@ export const getUserCount = async () => {
 };
 
 
-export const getUserById = async (id: string) => {
-  return await UserModel.findById(id);
+export const getUserById = async (_id: string) => {
+  return await UserModel.findById(_id, 'name email imageUrl role address isBlocked followers following premiumMembership');
 };
 
-export const updateUserProfile = async (id: string, profileData: IUserProfileUpdate) => {
-  return await UserModel.findByIdAndUpdate(id, profileData, { new: true, runValidators: true });
+
+export const updateUserProfile = async (_id: string, profileData: IUserProfileUpdate) => {
+  return await UserModel.findByIdAndUpdate(_id, profileData, { new: true, runValidators: true });
 };
 
 export const adminUpdateUser = async (id: string, adminData: IAdminUpdate) => {

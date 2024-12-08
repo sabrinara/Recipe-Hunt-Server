@@ -12,11 +12,13 @@ router.post('/signup', validateRequest(userSignupSchema), userController.signup)
 router.post('/login', validateRequest(userLoginSchema), userController.login);
 router.get('/all', userController.getAllUsers);
 router.get('/', userController.getUserCount);
+
 // Protected routes
 router.use(authenticate); 
 
-router.get('/', userController.getAllUsers);
+// Route in user.router.ts
 router.get('/profile', userController.getUserProfile);
+
 router.patch('/profile', validateRequest(userProfileUpdateSchema), userController.updateUserProfile);
 router.post('/follow', validateRequest(userFollowSchema), userController.followUser);
 router.post('/unfollow', validateRequest(userFollowSchema), userController.unfollowUser);

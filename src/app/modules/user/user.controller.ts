@@ -31,16 +31,18 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response, next: 
 export const getUserCount = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const count = await userService.getUserCount();
   SendResponse(res, 200, 'success', 'Fetched user count successfully', { count });
-})
+});
+
 export const getUserProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const user = await userService.getUserById(req.user.id);
   SendResponse(res, 200, 'success', 'Fetched user profile successfully', { user });
 });
 
 export const updateUserProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await userService.updateUserProfile(req.user.id, req.body);
+  const user = await userService.updateUserProfile(req.user.id, req.body);  // Ensure `req.user.id` is populated correctly
   SendResponse(res, 200, 'success', 'Profile updated successfully', { user });
 });
+
 
 export const adminUpdateUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const user = await userService.adminUpdateUser(req.params.id, req.body);
