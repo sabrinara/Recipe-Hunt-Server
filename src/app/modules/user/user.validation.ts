@@ -39,6 +39,7 @@ export const adminUpdateSchema = z.object({
 
 export const userFollowSchema = z.object({
   body: z.object({
-    userId: z.string(),
+      userId: z.string().min(24, "Invalid user ID format"), // Add validation rules
   }),
 });
+

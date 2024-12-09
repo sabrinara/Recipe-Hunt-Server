@@ -77,39 +77,72 @@ export const updateUserProfile = async (_id: string, profileData: IUserProfileUp
 };
 
 
-export const adminUpdateUser = async (id: string, adminData: IAdminUpdate) => {
-  return await UserModel.findByIdAndUpdate(id, adminData, { new: true, runValidators: true });
+export const adminUpdateUser = async (_id: string, adminData: IAdminUpdate) => {
+  return await UserModel.findByIdAndUpdate(_id, adminData, { new: true, runValidators: true });
 };
 
-export const deleteUser = async (id: string) => {
-  await UserModel.findByIdAndDelete(id);
+export const deleteUser = async (_id: string) => {
+  await UserModel.findByIdAndDelete(_id);
 };
 
-export const followUser = async (currentUserId: string, targetUserId: string) => {
-  const currentUser = await UserModel.findById(currentUserId);
-  const targetUser = await UserModel.findById(targetUserId);
+export const followUser = async (payload: {
+  userId: string;
+  followId: string;
+}) => {
+  const { userId, followId } = payload;
 
-  if (!currentUser || !targetUser) throw new AppError('User not found', 404);
+  const user = await UserModel.findById(userId);
+  const followUser = await UserModel.findById(followId);
 
-  // Add the follow relationship
-  currentUser.following.push(targetUserId as unknown as Types.ObjectId);
-  targetUser.followers.push(currentUserId as unknown as Types.ObjectId);
+  if (!user || !followUser) {
+    throw new Error('One of the users not found');
+  }
 
-  await currentUser.save();
-  await targetUser.save();
+  if (user.follow?.includes(followId)) {
+    throw new Error('Already follow this user');
+  }
+
+  // add follow
+  if (!user.follow?.includes(followId)) {
+    // Add followId to user's follow array
+    await UserModel.findByIdAndUpdate(userId, {
+      $push: { follow: followId },
+    });
+
+    if (!followUser.followers?.includes(userId)) {
+      // Add userId to followUser's followers array
+      await UserModel.findByIdAndUpdate(followId, {
+        $push: { followers: userId },
+      });
+    }
+  }
+
+  return { message: 'Successfully following' };
 };
 
-export const unfollowUser = async (currentUserId: string, targetUserId: string) => {
-  const currentUser = await UserModel.findById(currentUserId);
-  const targetUser = await UserModel.findById(targetUserId);
+export const unfollowUser = async (payload: {
+  userId: string;
+  followId: string;
+}) => {
+  const { userId, followId } = payload;
 
-  if (!currentUser || !targetUser) throw new AppError('User not found', 404);
+  const user = await UserModel.findById(userId);
+  const followUser = await UserModel.findById(followId);
 
-  // Remove the follow relationship
-  currentUser.following = currentUser.following.filter((id) => id.toString() !== targetUserId);
-  targetUser.followers = targetUser.followers.filter((id) => id.toString() !== currentUserId);
+  if (!user || !followUser) {
+    throw new Error('One of the users not found');
+  }
 
-  await currentUser.save();
-  await targetUser.save();
+  // Remove follow
+  if (user.follow?.includes(followId)) {
+    // Remove followId from user's follow array
+    await UserModel.findByIdAndUpdate(userId, {
+      $pull: { follow: followId },
+    });
+
+    // Remove followers
+    await UserModel.findByIdAndUpdate(followId, { $pull: { followers: userId } });
+  }
+
+  return { user, followUser };
 };
-

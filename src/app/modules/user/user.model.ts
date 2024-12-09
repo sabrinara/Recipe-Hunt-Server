@@ -1,5 +1,5 @@
 // user/model.ts
-import mongoose, { Schema, model } from 'mongoose';
+import  { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IUser } from './user.interface';
 
@@ -12,8 +12,16 @@ const userSchema = new Schema<IUser>({
   address: { type: String },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   isBlocked: { type: Boolean, default: false },
-  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  follow:{
+    type: [Schema.Types.ObjectId],
+    ref:"User",
+    default:[],
+  },
+  followers:{
+    type: [Schema.Types.ObjectId],
+    ref:"User",
+    default:[],
+  },
   premiumMembership: { type: Boolean, default: false },
 });
 

@@ -12,8 +12,8 @@ export interface IUser {
   address?: string;
   premiumMembership?: boolean;
   isBlocked?: boolean;
-  followers: Types.ObjectId[]; 
-  following: Types.ObjectId[]; 
+  follow?:string[];
+  followers?:string[];
   isCorrectPassword: (password: string) => Promise<boolean>; 
 }
 

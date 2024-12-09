@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as userService from './user.service';
 import catchAsync from '../../utils/catchAsync';
 import SendResponse from '../../utils/sendResponse';
+import { AppError } from '../../errors/AppError';
 
 
 export const signup = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -58,11 +59,14 @@ export const deleteUser = catchAsync(async (req: Request, res: Response, next: N
 });
 
 export const followUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  await userService.followUser(req.user.id, req.body.userId);
-  SendResponse(res, 200, 'success', 'User followed successfully');
+  const payload = req.body
+    const result = await userService.followUser(payload);
+  
+  SendResponse(res, 200, 'success', 'User followed successfully', { result });
 });
 
 export const unfollowUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  await userService.unfollowUser(req.user.id, req.body.userId);
-  SendResponse(res, 200, 'success', 'User unfollowed successfully');
+  const payload = req.body
+    const result =await userService.unfollowUser(payload);
+  SendResponse(res, 200, 'success', 'User unfollowed successfully', { result });
 });
