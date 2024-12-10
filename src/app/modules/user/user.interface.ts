@@ -27,7 +27,7 @@ export interface IUserProfileUpdate {
 }
 
 export interface IAdminUpdate {
-  role?: 'user' | 'admin';
+  role?:  'admin';
   isBlocked?: boolean;
 }
 

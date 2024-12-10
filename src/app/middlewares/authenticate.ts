@@ -12,15 +12,10 @@ export const authenticate = catchAsync(async (req: Request, res: Response, next:
 
   // Verify token (assuming JWT_SECRET is in environment variables)
   const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string; role: string };
-
-  // Attach user info to request object (req.user)
+ // Attach user info to request object (req.user)
   req.user = { id: decoded.id, role: decoded.role };
   next();
 });
-
-
-
-
 
 export const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
   if (req.user?.role !== 'admin') {
@@ -28,6 +23,3 @@ export const adminMiddleware = (req: Request, res: Response, next: NextFunction)
   }
   next();
 };
-
-
-

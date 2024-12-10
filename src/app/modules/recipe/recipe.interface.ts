@@ -1,48 +1,42 @@
 import { Types } from 'mongoose';
 
 export interface IRecipe {
-  _id: Types.ObjectId;
-  user: Types.ObjectId;
+  writer: Types.ObjectId;
   name: string;
   title: string;
   description: string;
   image: string;
-  ingredients: string[];
-  cookingTime: number; 
-  tags: string[]; 
+  ingredients: TIngredients[];
+  cookingTime: number;
+  tags: string[];
   ratings: number[];
-  comments: Types.ObjectId[];
+  comments: TComments[];
+  difficulty: 'easy' | 'medium' | 'hard';
   upvotes: number;
   downvotes: number;
   isPublished: boolean;
+  isPremium: boolean;
 }
 
-export interface IRecipeCreate {
+export type TIngredients = {
   name: string;
-  title: string;
-  description: string;
-  image: string;
-  ingredients: string[];
-  cookingTime: number;
-  tags: string[];
-}
+  quantity: string;
+  type?: string;
+  isChecked?: boolean;
+};
 
-export interface IRecipeUpdate {
-  name?: string;
-  title?: string;
-  description?: string;
-  image?: string;
-  ingredients?: string[];
-  cookingTime?: number;
-  tags?: string[];
-}
+export type TComments = {
+  user: Types.ObjectId;
+  comment: string;
+  date: Date;
+};
 
 export interface IRecipeFilter {
   name?: string;
   title?: string;
-  ingredients?: string[]; 
+  ingredients?: string[];
   minCookingTime?: number;
   maxCookingTime?: number;
   tags?: string[];
-  keyword?: string; 
+  keyword?: string;
 }

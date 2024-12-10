@@ -14,8 +14,8 @@ router.get('/:id', recipeController.getRecipeById);
 // Protected Routes
 router.use(authenticate);
 
-router.get('/user/my-recipes', recipeController.getUserRecipes); 
-router.post('/', validateRequest(recipeCreateSchema), recipeController.createRecipe);
+router.get('/user/my-recipes',recipeController.getUserRecipes); 
+router.post('/', validateRequest(recipeCreateSchema),recipeController.createRecipeData);
 router.patch('/:id', validateRequest(recipeUpdateSchema), recipeController.updateRecipe);
 router.delete('/:id', recipeController.deleteRecipe);
 router.post('/:id/rate', validateRequest(rateRecipeSchema), recipeController.rateRecipe);
@@ -26,8 +26,9 @@ router.post('/:id/downvote', recipeController.downvoteRecipe);
 router.use(adminMiddleware);
 
 router.delete('/admin/:id', recipeController.adminDeleteRecipe);
-router.patch('/:id/publish', recipeController.publishRecipe);
-router.patch('/:id/unpublish', recipeController.unpublishRecipe);
+router.patch('/:id/publish', authenticate, adminMiddleware, recipeController.publishRecipe);
+router.patch('/:id/unpublish', authenticate, adminMiddleware, recipeController.unpublishRecipe);
+
 
 
 

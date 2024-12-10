@@ -49,7 +49,7 @@ export const loginUser = async (email: string, password: string) => {
 
 export const getAllUsers = async (page: number, limit: number) => {
   const skip = (page - 1) * limit;
-  return await UserModel.find({}, 'name email imageUrl role address isBlocked followers following premiumMembership').skip(skip).limit(limit);
+  return await UserModel.find({}, 'name email imageUrl role address isBlocked followers follow premiumMembership').skip(skip).limit(limit);
 };
 
 export const getUserCount = async () => {

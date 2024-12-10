@@ -3,7 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import * as userService from './user.service';
 import catchAsync from '../../utils/catchAsync';
 import SendResponse from '../../utils/sendResponse';
-import { AppError } from '../../errors/AppError';
 
 
 export const signup = catchAsync(async (req: Request, res: Response, next: NextFunction) => {

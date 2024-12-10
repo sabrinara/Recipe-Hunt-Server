@@ -1,16 +1,18 @@
-import { IRecipeCreate, IRecipeUpdate, IRecipeFilter } from './recipe.interface';
+import {  IRecipeFilter, IRecipe } from './recipe.interface';
 import RecipeModel from './recipe.model';
 import { AppError } from '../../errors/AppError';
 import { Types } from 'mongoose';
+import { JwtPayload } from '../user/user.utils';
 
 // Create a new recipe
-export const createRecipe = async (recipeData: any, userId: Types.ObjectId) => {
-    return await RecipeModel.create({ ...recipeData, user: userId });
-  };
+export const createRecipeData = async (payload: IRecipe) => {
+  const recipe = await RecipeModel.create(payload);
+  return recipe;
+};
 
-export const updateRecipe = async (id: string, recipeData: IRecipeUpdate, userId: string) => {
+export const updateRecipe = async (id: string, recipeData: IRecipe, userId: string) => {
   const recipe = await RecipeModel.findOneAndUpdate(
-    { _id: id, user: userId },
+    { _id: id, writer: userId },
     recipeData,
     { new: true, runValidators: true }
   );
@@ -48,7 +50,7 @@ export const getAllRecipes = async (filter: IRecipeFilter, page: number, limit: 
   return await query.skip((page - 1) * limit).limit(limit);
 };
 
-export const rateRecipe = async (id: string, rating: number, userId: string) => {
+export const rateRecipe = async (id: string, rating: number) => {
   const recipe = await RecipeModel.findById(id);
   if (!recipe) throw new AppError('Recipe not found', 404);
 
@@ -57,11 +59,11 @@ export const rateRecipe = async (id: string, rating: number, userId: string) => 
   return recipe;
 };
 
-export const commentRecipe = async (id: string, commentId: Types.ObjectId) => {
+export const commentRecipe = async (user:JwtPayload, id: string, commentId: string) => {
   const recipe = await RecipeModel.findById(id);
   if (!recipe) throw new AppError('Recipe not found', 404);
 
-  recipe.comments.push(commentId);
+  recipe.comments.push({ user: user._id, comment: commentId , date: new Date() });
   await recipe.save();
   return recipe;
 };

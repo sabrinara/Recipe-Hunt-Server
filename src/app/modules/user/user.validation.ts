@@ -32,7 +32,7 @@ export const userProfileUpdateSchema = z.object({
 
 export const adminUpdateSchema = z.object({
   body: z.object({
-    role: z.enum(['user', 'admin']).optional(),
+    role: z.enum(['admin']).optional(),
     isBlocked: z.boolean().optional(),
   }),
 });

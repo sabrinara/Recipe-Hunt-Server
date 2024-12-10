@@ -4,10 +4,16 @@ import SendResponse from '../../utils/sendResponse';
 
 
 // Create a new recipe
-export const createRecipe = async (req: Request, res: Response) => {
-    const recipe = await recipeService.createRecipe(req.body, req.user._id);
+export const createRecipeData = async (req: Request, res: Response) => {
+  try {
+    const recipe = await recipeService.createRecipeData(req.body);
     SendResponse(res, 201, 'success', 'Recipe created successfully', { recipe });
-  };
+  } catch (error) {
+    console.error('Error creating recipe:', error);
+    SendResponse(res, 500, 'error', 'Internal Server Error', {});
+  }
+};
+
 
 
 export const updateRecipe = async (req: Request, res: Response) => {
@@ -34,7 +40,7 @@ export const getAllRecipes = async (req: Request, res: Response) => {
 };
 
 export const rateRecipe = async (req: Request, res: Response) => {
-  const recipe = await recipeService.rateRecipe(req.params.id, req.body.rating, req.user._id);
+  const recipe = await recipeService.rateRecipe(req.params.id, req.body.rating);
   SendResponse(res, 200, 'success', 'Recipe rated successfully', { recipe });
 };
 
