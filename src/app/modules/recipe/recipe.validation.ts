@@ -16,6 +16,11 @@ const commentSchema = z.object({
   date: z.date().default(new Date()), // Optional, defaults to current date
 });
 
+
+export const rateRecipeSchema = z.object({
+  rating: z.number().min(1).max(5),
+});
+
 export const recipeCreateSchema = z.object({
   body: z.object({
     name: z.string().min(3, 'Name must be at least 3 characters.'),
@@ -30,7 +35,7 @@ export const recipeCreateSchema = z.object({
     cookingTime: z.number().min(1, 'Cooking time must be at least 1 minute.'),
     tags: z.array(z.string()).min(1, 'At least one tag is required.'),
     writer: z.string().min(1, 'Writer ID is required.'),
-    rating: z.array(z.number()).optional(),
+    ratings: z.array(rateRecipeSchema).optional(),
     comments: z.array(commentSchema).optional(),
     difficulty: z.string().optional(),
     upVotes: z.array(z.string()).optional(),
@@ -57,9 +62,4 @@ export const updateRecipeValidation = z.object({
       text: z.string(),
     })
   ).optional(),
-});
-
-
-export const rateRecipeSchema = z.object({
-  rating: z.number().min(1).max(5),
 });

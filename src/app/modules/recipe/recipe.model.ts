@@ -1,14 +1,16 @@
 import { Schema, model } from 'mongoose';
-import { IRecipe, TIngredients, TComments } from './recipe.interface';
+import { IRecipe, IIngredients, IComments } from './recipe.interface';
 
-const ingredientSchema = new Schema<TIngredients>({
+const ingredientSchema = new Schema<IIngredients>({
   name: { type: String, required: true },
   quantity: { type: String, required: true },
   type: { type: String },
   isChecked: { type: Boolean, default: false },
 });
 
-const commentSchema = new Schema<TComments>({
+
+
+const commentSchema = new Schema<IComments>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   comment: { type: String, required: true },
   date: { type: Date, default: Date.now },
@@ -24,7 +26,7 @@ const recipeSchema = new Schema<IRecipe>(
     ingredients: { type: [ingredientSchema], required: true },
     cookingTime: { type: Number, required: true },
     tags: { type: [String], default: [] },
-    rating: { type: [Number], default: [] },
+    ratings: { type: [Number], default: [] },
     comments: { type: [commentSchema], default: [] },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'easy' },
     upvotes: { type: Number, default: 0 },
@@ -35,9 +37,9 @@ const recipeSchema = new Schema<IRecipe>(
   { timestamps: true }
 );
 
-recipeSchema.methods.calculateAverageRating = function () {
-  return this.rating.length ? this.rating.reduce((sum: number, r: number) => sum + r, 0) / this.rating.length : 0;
-};
+// recipeSchema.methods.calculateAverageRating = function () {
+//   return this.rating.length ? this.rating.reduce((sum: number, r: number) => sum + r, 0) / this.rating.length : 0;
+// };
 
 const RecipeModel = model<IRecipe>('Recipe', recipeSchema);
 export default RecipeModel;

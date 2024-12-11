@@ -9,7 +9,7 @@ export interface IRecipe {
   ingredients: IIngredients[];
   cookingTime: number;
   tags: string[];
-  rating: IRating[];
+  ratings: number[];
   comments: IComments[];
   difficulty: 'easy' | 'medium' | 'hard';
   upvotes: number;
@@ -24,11 +24,6 @@ export type IIngredients = {
   type?: string;
   isChecked?: boolean;
 };
-
-export type IRating = {
-  user: Types.ObjectId;
-  rating: number;
-}
 
 export type IComments = {
   user: Types.ObjectId;

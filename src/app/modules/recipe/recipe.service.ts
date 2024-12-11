@@ -51,10 +51,12 @@ export const rateRecipe = async (id: string, rating: number) => {
   const recipe = await RecipeModel.findById(id);
   if (!recipe) throw new AppError('Recipe not found', 404);
 
-  recipe.rating.push(rating);
+  recipe.ratings.push(rating);
   await recipe.save();
   return recipe;
 };
+
+
 
 export const commentRecipe = async (user:JwtPayload, id: string, commentId: string) => {
   const recipe = await RecipeModel.findById(id);
