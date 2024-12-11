@@ -4,11 +4,12 @@ import { verifyPayment } from './payment.utils';
 import { OrderModel } from '../order/order.model';
 import UserModel from '../user/user.model';
 
-const confirmationServices = async (transactionId: string) => {
+const confirmationServices = async (transactionId: string, status: string) => {
 
 
   const verifyResponse = await verifyPayment(transactionId);
   console.log(verifyResponse.data.pay_status);
+  console.log(status);
 
   let result;
   let message = '';
