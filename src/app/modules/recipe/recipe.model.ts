@@ -24,7 +24,7 @@ const recipeSchema = new Schema<IRecipe>(
     ingredients: { type: [ingredientSchema], required: true },
     cookingTime: { type: Number, required: true },
     tags: { type: [String], default: [] },
-    ratings: { type: [Number], default: [] },
+    rating: { type: [Number], default: [] },
     comments: { type: [commentSchema], default: [] },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], default: 'easy' },
     upvotes: { type: Number, default: 0 },
@@ -36,7 +36,7 @@ const recipeSchema = new Schema<IRecipe>(
 );
 
 recipeSchema.methods.calculateAverageRating = function () {
-  return this.ratings.length ? this.ratings.reduce((sum: number, r: number) => sum + r, 0) / this.ratings.length : 0;
+  return this.rating.length ? this.rating.reduce((sum: number, r: number) => sum + r, 0) / this.rating.length : 0;
 };
 
 const RecipeModel = model<IRecipe>('Recipe', recipeSchema);

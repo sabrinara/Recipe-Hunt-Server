@@ -1,6 +1,6 @@
 import express from 'express';
 import * as recipeController from './recipe.controller';
-import { recipeCreateSchema, recipeUpdateSchema, rateRecipeSchema } from './recipe.validation';
+import { recipeCreateSchema, updateRecipeValidation, rateRecipeSchema } from './recipe.validation';
 import { adminMiddleware, authenticate } from '../../middlewares/authenticate';
 import validateRequest from '../../middlewares/validateRequest';
 
@@ -16,7 +16,7 @@ router.use(authenticate);
 
 router.get('/user/my-recipes',recipeController.getUserRecipes); 
 router.post('/', validateRequest(recipeCreateSchema),recipeController.createRecipeData);
-router.patch('/:id', validateRequest(recipeUpdateSchema), recipeController.updateRecipe);
+router.patch('/:id', validateRequest(updateRecipeValidation), recipeController.updateRecipe);
 router.delete('/:id', recipeController.deleteRecipe);
 router.post('/:id/rate', validateRequest(rateRecipeSchema), recipeController.rateRecipe);
 router.post('/:id/upvote', recipeController.upvoteRecipe);

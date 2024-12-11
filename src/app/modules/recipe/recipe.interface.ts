@@ -6,11 +6,11 @@ export interface IRecipe {
   title: string;
   description: string;
   image: string;
-  ingredients: TIngredients[];
+  ingredients: IIngredients[];
   cookingTime: number;
   tags: string[];
-  ratings: number[];
-  comments: TComments[];
+  rating: IRating[];
+  comments: IComments[];
   difficulty: 'easy' | 'medium' | 'hard';
   upvotes: number;
   downvotes: number;
@@ -18,14 +18,19 @@ export interface IRecipe {
   isPremium: boolean;
 }
 
-export type TIngredients = {
+export type IIngredients = {
   name: string;
   quantity: string;
   type?: string;
   isChecked?: boolean;
 };
 
-export type TComments = {
+export type IRating = {
+  user: Types.ObjectId;
+  rating: number;
+}
+
+export type IComments = {
   user: Types.ObjectId;
   comment: string;
   date: Date;

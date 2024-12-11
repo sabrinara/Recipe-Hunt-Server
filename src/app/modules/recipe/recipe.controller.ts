@@ -17,7 +17,8 @@ export const createRecipeData = async (req: Request, res: Response) => {
 
 
 export const updateRecipe = async (req: Request, res: Response) => {
-  const recipe = await recipeService.updateRecipe(req.params.id, req.body, req.user._id);
+  const { id } = req.params;
+  const recipe = await recipeService.updateRecipe(id, req.body);
   SendResponse(res, 200, 'success', 'Recipe updated successfully', { recipe });
 };
 

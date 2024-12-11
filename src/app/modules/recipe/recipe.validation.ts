@@ -30,7 +30,7 @@ export const recipeCreateSchema = z.object({
     cookingTime: z.number().min(1, 'Cooking time must be at least 1 minute.'),
     tags: z.array(z.string()).min(1, 'At least one tag is required.'),
     writer: z.string().min(1, 'Writer ID is required.'),
-    ratings: z.array(z.number()).optional(),
+    rating: z.array(z.number()).optional(),
     comments: z.array(commentSchema).optional(),
     difficulty: z.string().optional(),
     upVotes: z.array(z.string()).optional(),
@@ -40,7 +40,25 @@ export const recipeCreateSchema = z.object({
   }),
 });
 
-export const recipeUpdateSchema = recipeCreateSchema.partial();
+export const updateRecipeValidation = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  ingredients: z.array(
+    z.object({
+      name: z.string(),
+      quantity: z.string(),
+    })
+  ).optional(),
+  cookingTime: z.number().optional(),
+  writer: z.string().optional(),
+  comments: z.array(
+    z.object({
+      user: z.string(),
+      text: z.string(),
+    })
+  ).optional(),
+});
+
 
 export const rateRecipeSchema = z.object({
   rating: z.number().min(1).max(5),

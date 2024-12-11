@@ -10,13 +10,10 @@ export const createRecipeData = async (payload: IRecipe) => {
   return recipe;
 };
 
-export const updateRecipe = async (id: string, recipeData: IRecipe, userId: string) => {
-  const recipe = await RecipeModel.findOneAndUpdate(
-    { _id: id, writer: userId },
-    recipeData,
-    { new: true, runValidators: true }
-  );
-  if (!recipe) throw new AppError('Recipe not found or unauthorized', 404);
+export const updateRecipe = async (id: string, payload: IRecipe) => {
+  const recipe = await RecipeModel.findByIdAndUpdate(id, [{ $set: payload }], {
+    new: true,
+  });
   return recipe;
 };
 
@@ -54,7 +51,7 @@ export const rateRecipe = async (id: string, rating: number) => {
   const recipe = await RecipeModel.findById(id);
   if (!recipe) throw new AppError('Recipe not found', 404);
 
-  recipe.ratings.push(rating);
+  recipe.rating.push(rating);
   await recipe.save();
   return recipe;
 };
