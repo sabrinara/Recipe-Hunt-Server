@@ -1,14 +1,14 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { verifyPayment } from './payment.utils';
-import { OrderModel } from '../order/order.model';
+import OrderModel  from '../order/order.model';
 import UserModel from '../user/user.model';
 
 const confirmationServices = async (transactionId: string, status: string) => {
 
 
   const verifyResponse = await verifyPayment(transactionId);
-  console.log(verifyResponse.data.pay_status);
+  console.log(verifyResponse.pay_status);
   console.log(status);
 
   let result;
@@ -16,19 +16,21 @@ const confirmationServices = async (transactionId: string, status: string) => {
   let statusClass = '';
   let description = '';
 
-  if (verifyResponse.data && verifyResponse.data.pay_status === 'Successful') {
+  if (verifyResponse && verifyResponse.pay_status === 'Successful') {
     result = await OrderModel.findOneAndUpdate(
       { transactionId },
-      { paymentStatus: 'paid' }
-    );
+      {
+        paymentStatus: "Paid",
+        status: "Paid"
+    });
     await UserModel.findOneAndUpdate(
       {email: result?.user?.email}, 
-      { isPaid: true});
+      { premiumMembership: true});
 
     message = 'Payment Successful!';
     statusClass = 'success';
     description =
-      'Your payment was processed successfully. Thank you for your purchase!';
+      'Your payment was processed successfully. Thank you for your subscription!';
   } else {
     message = 'Payment Failed';
     statusClass = 'failed';
