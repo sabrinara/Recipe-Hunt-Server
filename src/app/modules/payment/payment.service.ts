@@ -1,15 +1,14 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { verifyPayment } from './payment.utils';
-import OrderModel  from '../order/order.model';
 import UserModel from '../user/user.model';
+import OrderModel from '../order/order.model';
 
-const confirmationServices = async (transactionId: string, status: string) => {
+const confirmationServices = async (transactionId: string) => {
 
 
   const verifyResponse = await verifyPayment(transactionId);
-  console.log(verifyResponse.pay_status);
-  console.log(status);
+
 
   let result;
   let message = '';
@@ -20,14 +19,18 @@ const confirmationServices = async (transactionId: string, status: string) => {
     result = await OrderModel.findOneAndUpdate(
       { transactionId },
       {
-        paymentStatus: "Paid",
-        status: "Paid"
-    });
-    await UserModel.findOneAndUpdate(
-      {email: result?.user?.email}, 
-      { premiumMembership: true});
+        paymentStatus: "Paid"
+      });
+    const userId = result?.user;
+    console.log(userId)
 
-    message = 'Payment Successful!';
+    if (result) {
+      await UserModel.findOneAndUpdate({ _id: userId }, {
+        premiumMembership: true,
+      })
+    }
+
+    message = `${transactionId}`
     statusClass = 'success';
     description =
       'Your payment was processed successfully. Thank you for your subscription!';
@@ -42,19 +45,10 @@ const confirmationServices = async (transactionId: string, status: string) => {
   const filePath = join(__dirname, '../../views/confirmation.html');
   console.log(`Resolved file path: ${filePath}`);
 
-  try {
-    let template = readFileSync(filePath, 'utf-8');
-    template = template
-      .replace('{{message}}', message)
-      .replace('{{statusClass}}', statusClass)
-      .replace('{{description}}', description);
+  let template = readFileSync(filePath, 'utf-8')
 
-    return template;
-  } catch (error) {
-    console.error('Error reading template:', error);
-    throw new Error('Template file not found or could not be read.');
-  }
-
+  template = template.replace('{{message}}', message)
+  return template;
 };
 
 export const paymentServices = {

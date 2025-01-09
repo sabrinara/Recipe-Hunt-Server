@@ -1,36 +1,42 @@
 import { Schema, model } from 'mongoose';
 import { IOrder } from './order.interface';
 
-
 const orderSchema = new Schema<IOrder>(
   {
     user: {
-      name: { type: String, required: true },
-      email: { type: String, required: true },
-      phone: { type: String, required: true },
-    },
-    price: {
-      type: Number,
+      type: Schema.Types.ObjectId,
       required: true,
-    },
-    duration: {
-      type: String,
-      required: true,
-    },
-    paymentStatus: {
-      type: String,
-      enum: ['Pending', 'Paid', 'Failed'],
-      default: 'Pending',
+      ref: 'User',
     },
     transactionId: {
+        type: String,
+        required: true,
+        unique: true, 
+      },
+    subcriptionPlan:{
+        type: String,
+        enum: ['premium', 'gold', 'platinum'], 
+        required: true
+      },
+    status: {
       type: String,
-      required: true,
+      enum: ['active', 'canceled', 'expired'],
+      default: 'active',
     },
+    startDate: { type: Date, default: Date.now },
+    endDate: { type: Date },
+    paymentStatus: {
+      type: String,
+      default: 'Pending',
+    },
+   
   },
   {
     timestamps: true,
-  },
+  }
 );
 
+
 const OrderModel = model<IOrder>('order', orderSchema);
-export  default OrderModel;
+
+export default OrderModel;
