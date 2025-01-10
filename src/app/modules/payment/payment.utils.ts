@@ -44,6 +44,7 @@ export const verifyPayment = async (tnxId: string) => {
         request_id: tnxId,
       },
     });
+    console.log('Verify Payment Response:', res.data); // Debug log
     return res.data;
   } catch (error) {
     throw new AppError('Payment verification failed', 400);

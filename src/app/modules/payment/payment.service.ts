@@ -5,50 +5,40 @@ import UserModel from '../user/user.model';
 import OrderModel from '../order/order.model';
 
 const confirmationServices = async (transactionId: string) => {
-
-
   const verifyResponse = await verifyPayment(transactionId);
 
-
-  let result;
-  let message = '';
-  let statusClass = '';
-  let description = '';
+  console.log('Verify Response:', verifyResponse); // Debug log
 
   if (verifyResponse && verifyResponse.pay_status === 'Successful') {
-    result = await OrderModel.findOneAndUpdate(
+    const order = await OrderModel.findOneAndUpdate(
       { transactionId },
-      {
-        paymentStatus: "Paid"
-      });
-    const userId = result?.user;
-    console.log(userId)
+      { paymentStatus: "Paid" },
+      { new: true }
+    );
 
-    if (result) {
-      await UserModel.findOneAndUpdate({ _id: userId }, {
-        premiumMembership: true,
-      })
+    if (order) {
+      const userId = order.user;
+      await UserModel.findOneAndUpdate(
+        { _id: userId },
+        { premiumMembership: true },
+        { new: true }
+      );
     }
 
-    message = `${transactionId}`
-    statusClass = 'success';
-    description =
-      'Your payment was processed successfully. Thank you for your subscription!';
+    const message = `${transactionId}`;
+    const statusClass = 'success';
+    const description = 'Your payment was processed successfully. Thank you for your subscription!';
+
+    const filePath = join(__dirname, '../../views/confirmation.html');
+    let template = readFileSync(filePath, 'utf-8');
+    template = template.replace('{{message}}', message);
+    return template;
   } else {
-    message = 'Payment Failed';
-    statusClass = 'failed';
-    description =
-      'Unfortunately, your payment could not be processed. Please try again or contact support for assistance.';
+    console.error('Payment status not successful or missing:', verifyResponse); // Debug log
+    throw new Error(
+      'Unfortunately, your payment could not be processed. Please try again or contact support for assistance.'
+    );
   }
-
-  // Debug the resolved file path
-  const filePath = join(__dirname, '../../views/confirmation.html');
-  console.log(`Resolved file path: ${filePath}`);
-
-  let template = readFileSync(filePath, 'utf-8')
-
-  template = template.replace('{{message}}', message)
-  return template;
 };
 
 export const paymentServices = {
