@@ -16,13 +16,14 @@ const commentSchema = new Schema<IComments>({
   date: { type: Date, default: Date.now },
 });
 
+
 const recipeSchema = new Schema<IRecipe>(
   {
     writer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     name: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
-    image: { type: String, default: '' },
+    image: { type: [String], default: [] },
     ingredients: { type: [ingredientSchema], required: true },
     cookingTime: { type: Number, required: true },
     tags: { type: [String], default: [] },
