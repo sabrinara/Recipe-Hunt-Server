@@ -1,11 +1,12 @@
+import mongoose from 'mongoose';
 import { z } from 'zod';
 
 // Ingredient Schema
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Ingredient name is required.'),
   quantity: z.string().min(1, 'Quantity is required.'),
-  type: z.string().min(1).optional(), // Example: "Vegetable", "Spice"
-  isChecked: z.boolean().default(false), // Optional with default
+  type: z.string().min(1).optional(), 
+  isChecked: z.boolean().default(false), 
   
 });
 
@@ -13,7 +14,7 @@ const ingredientSchema = z.object({
 const commentSchema = z.object({
   user: z.string().min(1, 'User ID is required.'),
   comment: z.string().min(1, 'Comment cannot be empty.'),
-  date: z.date().default(new Date()), // Optional, defaults to current date
+  date: z.date().default(new Date()), 
 });
 
 
@@ -31,10 +32,16 @@ export const recipeCreateSchema = z.object({
     ingredients: z
       .array(ingredientSchema)
       .min(1, 'At least one ingredient is required.'),
-    image: z.string().url('Image must be a valid URL.'),
+    image: z.array(z.string().url('Image must be a valid URL.')),
     cookingTime: z.number().min(1, 'Cooking time must be at least 1 minute.'),
     tags: z.array(z.string()).min(1, 'At least one tag is required.'),
-    writer: z.string().min(1, 'Writer ID is required.'),
+    user: z
+    .string({
+      required_error: 'User is required',
+    })
+    .refine((val) => {
+      return mongoose.Types.ObjectId.isValid(val);
+    }),
     ratings: z.array(rateRecipeSchema).optional(),
     comments: z.array(commentSchema).optional(),
     difficulty: z.string().optional(),
@@ -55,7 +62,6 @@ export const updateRecipeValidation = z.object({
     })
   ).optional(),
   cookingTime: z.number().optional(),
-  writer: z.string().optional(),
   comments: z.array(
     z.object({
       user: z.string(),

@@ -1,18 +1,28 @@
 import { Request, Response } from 'express';
 import * as recipeService from './recipe.service';
 import SendResponse from '../../utils/sendResponse';
+import { Types } from 'mongoose';
 
 
 // Create a new recipe
 export const createRecipeData = async (req: Request, res: Response) => {
   try {
-    const recipe = await recipeService.createRecipeData(req.body);
+    const { user, ...recipeData } = req.body;
+
+    // Ensure that the user ID is valid
+    if (!user || !Types.ObjectId.isValid(user)) {
+      return SendResponse(res, 400, 'error', 'Invalid user ID', {});
+    }
+
+    const recipe = await recipeService.createRecipeData({ ...recipeData, user });
+
     SendResponse(res, 201, 'success', 'Recipe created successfully', { recipe });
   } catch (error) {
     console.error('Error creating recipe:', error);
     SendResponse(res, 500, 'error', 'Internal Server Error', {});
   }
 };
+
 
 
 

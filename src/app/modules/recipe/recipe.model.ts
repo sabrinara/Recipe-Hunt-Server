@@ -19,7 +19,7 @@ const commentSchema = new Schema<IComments>({
 
 const recipeSchema = new Schema<IRecipe>(
   {
-    writer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     name: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },

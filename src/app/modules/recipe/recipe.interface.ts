@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 
 export interface IRecipe {
-  writer: Types.ObjectId;
+  user: ObjectId;
   name: string;
   title: string;
   description: string;

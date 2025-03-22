@@ -24,28 +24,28 @@ export const deleteRecipe = async (id: string, userId: string) => {
 };
 
 export const getRecipeById = async (id: string) => {
-  return await RecipeModel.findById(id).populate('comments');
+  return await RecipeModel.findById(id).populate('user').populate('comments.user', 'name email');
 };
 
 export const getAllRecipes = async (filter: IRecipeFilter, page: number, limit: number) => {
-  const query = RecipeModel.find({
-    ...(filter.name && { name: { $regex: filter.name, $options: 'i' } }),
-    ...(filter.title && { title: { $regex: filter.title, $options: 'i' } }),
-    ...(filter.ingredients && { ingredients: { $in: filter.ingredients } }),
-    ...(filter.tags && { tags: { $in: filter.tags } }),
-    ...(filter.keyword && {
-      $or: [
-        { name: { $regex: filter.keyword, $options: 'i' } },
-        { title: { $regex: filter.keyword, $options: 'i' } },
-        { description: { $regex: filter.keyword, $options: 'i' } },
-      ],
-    }),
-    ...(filter.minCookingTime && { cookingTime: { $gte: filter.minCookingTime } }),
-    ...(filter.maxCookingTime && { cookingTime: { $lte: filter.maxCookingTime } }),
-  });
+  const query = RecipeModel.find({})
+    .populate({
+      path: 'user'
+    })
+    .populate({
+      path: 'comments.user',
+      select: 'name email',
+    })
+    .skip((page - 1) * limit)
+    .limit(limit);
 
-  return await query.skip((page - 1) * limit).limit(limit);
+  const recipes = await query;
+  console.log('Populated Recipes:', recipes); // Debugging
+  return recipes;
 };
+
+
+
 
 export const rateRecipe = async (id: string, rating: number) => {
   const recipe = await RecipeModel.findById(id);
