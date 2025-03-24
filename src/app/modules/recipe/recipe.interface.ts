@@ -1,11 +1,11 @@
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 
 export interface IRecipe {
-  writer: Types.ObjectId;
+  user: ObjectId;
   name: string;
   title: string;
   description: string;
-  image: string;
+  image: string[];
   ingredients: IIngredients[];
   cookingTime: number;
   tags: string[];
