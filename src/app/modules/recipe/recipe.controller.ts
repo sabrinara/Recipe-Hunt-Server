@@ -68,7 +68,7 @@ export const downvoteRecipe = async (req: Request, res: Response) => {
   
   // Get all recipes created by the logged-in user
   export const getUserRecipes = async (req: Request, res: Response) => {
-    const userId = req.user._id; // Get userId from authenticated user
+    const userId = req.user.id; // Get userId from authenticated user
     const recipes = await recipeService.getUserRecipes(userId);
     SendResponse(res, 200, 'success', 'User recipes fetched successfully', { recipes });
   };
