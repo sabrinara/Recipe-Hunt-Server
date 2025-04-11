@@ -11,9 +11,11 @@ export const createRecipeData = async (payload: IRecipe) => {
 };
 
 export const updateRecipe = async (id: string, payload: IRecipe) => {
-  const recipe = await RecipeModel.findByIdAndUpdate(id, [{ $set: payload }], {
+  const recipe = await RecipeModel.findByIdAndUpdate(id, payload, {
     new: true,
+    runValidators: true,
   });
+  
   return recipe;
 };
 
@@ -23,29 +25,66 @@ export const deleteRecipe = async (id: string) => {
   return recipe;
 };
 
-
-
-export const getRecipeById = async (id: string) => {
-  return await RecipeModel.findById(id).populate('user').populate('comments.user', 'name email');
-};
-
-export const getAllRecipes = async (filter: IRecipeFilter, page: number, limit: number) => {
-  const query = RecipeModel.find({})
+//a user all recipes api service
+export const getUserRecipes = async (userId: string | Types.ObjectId) => {
+  const recipes = await RecipeModel.find({ user: new Types.ObjectId(userId) })
     .populate({
       path: 'user'
     })
     .populate({
       path: 'comments.user',
       select: 'name email',
-    })
-    .skip((page - 1) * limit)
-    .limit(limit);
-
-  const recipes = await query;
-  console.log('Populated Recipes:', recipes); // Debugging
+    });
   return recipes;
 };
 
+export const getRecipeById = async (id: string) => {
+  return await RecipeModel.findById(id).populate('user').populate('comments.user', 'name email');
+};
+
+export const getAllRecipes = async (
+  filter: IRecipeFilter,
+  page: number,
+  limit: number
+) => {
+  const queryConditions: any = {};
+
+  if (filter.title) {
+    queryConditions.title = { $regex: filter.title, $options: 'i' }; 
+  }
+
+  if (filter.tags && filter.tags.length > 0) {
+    queryConditions.tags = { $in: filter.tags };
+  }
+
+  if (filter.difficulty) {
+    queryConditions.difficulty = filter.difficulty;
+  }
+
+  if (typeof filter.isPublished === 'boolean') {
+    queryConditions.isPublished = filter.isPublished;
+  }
+
+  // Pagination
+  const skip = (page - 1) * limit;
+
+  // Find recipes
+  const recipes = await RecipeModel.find(queryConditions)
+    .populate({
+      path: 'user',
+      select: 'name email' 
+    })
+    .populate({
+      path: 'comments.user',
+      select: 'name email',
+    })
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 })
+    .lean(); 
+
+  return recipes;
+};
 
 
 
@@ -90,12 +129,7 @@ export const downvoteRecipe = async (id: string) => {
 };
 
 
-  
-  // Get all recipes created by a specific user
-  export const getUserRecipes = async (userId: Types.ObjectId) => {
-    const recipes = await RecipeModel.find({ user: userId });
-    return recipes;
-  };
+
   
   // Admin deletes any user's recipe
   export const adminDeleteRecipe = async (id: string) => {

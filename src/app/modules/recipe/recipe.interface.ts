@@ -39,4 +39,6 @@ export interface IRecipeFilter {
   maxCookingTime?: number;
   tags?: string[];
   keyword?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  isPublished?: boolean;
 }
