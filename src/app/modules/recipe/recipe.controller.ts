@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as recipeService from './recipe.service';
 import SendResponse from '../../utils/sendResponse';
 import { Types } from 'mongoose';
@@ -32,10 +32,13 @@ export const updateRecipe = async (req: Request, res: Response) => {
   SendResponse(res, 200, 'success', 'Recipe updated successfully', { recipe });
 };
 
+
 export const deleteRecipe = async (req: Request, res: Response) => {
-  await recipeService.deleteRecipe(req.params.id, req.user._id);
+  await recipeService.deleteRecipe(req.params.id);
   SendResponse(res, 204, 'success', 'Recipe deleted successfully', {});
 };
+
+
 
 export const getRecipeById = async (req: Request, res: Response) => {
   const recipe = await recipeService.getRecipeById(req.params.id);

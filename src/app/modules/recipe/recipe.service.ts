@@ -17,11 +17,13 @@ export const updateRecipe = async (id: string, payload: IRecipe) => {
   return recipe;
 };
 
-export const deleteRecipe = async (id: string, userId: string) => {
-  const recipe = await RecipeModel.findOneAndDelete({ _id: id, user: userId });
-  if (!recipe) throw new AppError('Recipe not found or unauthorized', 404);
+export const deleteRecipe = async (id: string) => {
+  const recipe = await RecipeModel.findByIdAndDelete(id);
+  if (!recipe) throw new AppError('Recipe not found', 404);
   return recipe;
 };
+
+
 
 export const getRecipeById = async (id: string) => {
   return await RecipeModel.findById(id).populate('user').populate('comments.user', 'name email');
