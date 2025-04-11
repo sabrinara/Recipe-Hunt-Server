@@ -72,7 +72,6 @@ export const getAllRecipes = async (
   const recipes = await RecipeModel.find(queryConditions)
     .populate({
       path: 'user',
-      select: 'name email' 
     })
     .populate({
       path: 'comments.user',
