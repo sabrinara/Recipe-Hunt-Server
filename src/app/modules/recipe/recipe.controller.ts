@@ -54,8 +54,8 @@ export const getUserRecipes = async (req: Request, res: Response) => {
 //get all recipe
 export const getAllRecipes = async (req: Request, res: Response) => {
   const filter = req.query as any;
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit);
 
   const recipes = await recipeService.getAllRecipes(filter, page, limit);
 
