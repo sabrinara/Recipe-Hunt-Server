@@ -92,6 +92,12 @@ export const rateRecipe = async (id: string, rating: number) => {
   if (!recipe) throw new AppError('Recipe not found', 404);
 
   recipe.ratings.push(rating);
+
+  const total = recipe.ratings.reduce((sum, r) => sum + r, 0);
+  const average = total / recipe.ratings.length;
+
+  recipe.averageRating = Number(average.toFixed(1));
+
   await recipe.save();
   return recipe;
 };

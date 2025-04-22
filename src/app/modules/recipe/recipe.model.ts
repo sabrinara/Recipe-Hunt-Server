@@ -34,13 +34,12 @@ const recipeSchema = new Schema<IRecipe>(
     downvotes: { type: Number, default: 0 },
     isPublished: { type: Boolean, default: true },
     isPremium: { type: Boolean, default: false },
+    averageRating: { type: Number, default: 0 },
+
   },
   { timestamps: true }
 );
 
-// recipeSchema.methods.calculateAverageRating = function () {
-//   return this.rating.length ? this.rating.reduce((sum: number, r: number) => sum + r, 0) / this.rating.length : 0;
-// };
 
 const RecipeModel = model<IRecipe>('Recipe', recipeSchema);
 export default RecipeModel;

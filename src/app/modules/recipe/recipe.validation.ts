@@ -51,6 +51,7 @@ export const recipeCreateSchema = z.object({
     downVotes: z.array(z.string()).optional(),
     isPublished: z.boolean().default(true),
     isPremium: z.boolean().default(false),
+    averageRating: z.number().default(0),
   }),
 });
 
