@@ -19,7 +19,9 @@ const commentSchema = z.object({
 
 
 export const rateRecipeSchema = z.object({
-  rating: z.number().min(1).max(5),
+  body: z.object({
+    rating: z.number().min(1).max(5, "Rating must be between 1 to 5"),
+  }),
 });
 
 export const recipeCreateSchema = z.object({

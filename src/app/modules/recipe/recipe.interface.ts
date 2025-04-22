@@ -16,6 +16,7 @@ export interface IRecipe {
   downvotes: number;
   isPublished: boolean;
   isPremium: boolean;
+  averageRating: number;
 }
 
 export type IIngredients = {

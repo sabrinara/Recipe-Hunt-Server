@@ -64,9 +64,11 @@ export const getAllRecipes = async (req: Request, res: Response) => {
 
 //rate recipe
 export const rateRecipe = async (req: Request, res: Response) => {
+  console.log("Rating Request Received:", req.body.rating);
   const recipe = await recipeService.rateRecipe(req.params.id, req.body.rating);
   SendResponse(res, 200, 'success', 'Recipe rated successfully', { recipe });
 };
+
 
 //like
 export const upvoteRecipe = async (req: Request, res: Response) => {
